@@ -69,7 +69,8 @@ class ImageDataset(torch.utils.data.Dataset):
             _export_dataset_to_lmdb(stimuli, centerbias_model, lmdb_path)
             self.lmdb_env = lmdb.open(lmdb_path, subdir=os.path.isdir(lmdb_path),
                 readonly=True, lock=False,
-                readahead=False, meminit=False
+                readahead=False, meminit=False,
+                map_size=1024*1024*1024*1024
             )
             cached = False
             cache_fixation_data = True
@@ -173,7 +174,8 @@ class FixationDataset(torch.utils.data.Dataset):
             _export_dataset_to_lmdb(stimuli, centerbias_model, lmdb_path)
             self.lmdb_env = lmdb.open(lmdb_path, subdir=os.path.isdir(lmdb_path),
                 readonly=True, lock=False,
-                readahead=False, meminit=False
+                readahead=False, meminit=False,
+                map_size=1024*1024*1024*1024
             )
             cache_image_data=False
         else:
@@ -339,7 +341,7 @@ def _export_dataset_to_lmdb(stimuli: pysaliency.FileStimuli, centerbias_model: p
 
     print("Generate LMDB to %s" % lmdb_path)
     db = lmdb.open(lmdb_path, subdir=isdir,
-                   map_size=1099511627776 * 2, readonly=False,
+                   map_size=1024*1024*1024*1024, readonly=False,
                    meminit=False, map_async=True)
 
     txn = db.begin(write=True)
